@@ -1,0 +1,14 @@
+{
+  "name": "@mcp-evals/core",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "dependencies": {
+    "upstash": "1.5.0",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  }
+}

@@ -1,0 +1,3678 @@
+[
+  {
+    "name": "redis_list_databases",
+    "title": "List Redis Databases",
+    "description": "Lists all Upstash Redis databases in the authorized account scope. Never includes credentials — call redis_get_database with include_credentials for one database's.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "List Redis Databases"
+    }
+  },
+  {
+    "name": "redis_get_database",
+    "title": "Get Redis Database",
+    "description": "Gets details of a single Upstash Redis database: endpoint, region, plan, limits and state. Credentials (password and REST tokens) are included only when include_credentials is true and the connection is read-write; on a read-only connection they are omitted (get them from the Upstash console). A database with Protect Credentials enabled (is_password_protected) has none to return.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "include_credentials": {
+          "description": "Set true only when the user asks for connection details or wants to configure an app with this resource: the result then includes its credentials (REST tokens, password). Default false — metadata only. On a read-only connection credentials are omitted regardless",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "databaseId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get Redis Database"
+    }
+  },
+  {
+    "name": "redis_get_stats",
+    "title": "Get Redis Usage Stats",
+    "description": "Gets usage statistics of an Upstash Redis database: throughput, latency, hits and misses, keys, data size and connections over the period, requests per day, and this month's requests, bandwidth and cost. With refresh, the API recomputes the cached figures first.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "period": {
+          "description": "Window the time series cover; the API's default when omitted. Daily and monthly totals ignore it",
+          "type": "string",
+          "enum": [
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "3d",
+            "7d"
+          ]
+        },
+        "refresh": {
+          "description": "Ask the API to recompute the cached figures before reading them, as the Upstash console does when it opens the page. Needs a read-write connection; when the refresh is refused the cached figures are still returned, with refreshed: false",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "databaseId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get Redis Usage Stats"
+    }
+  },
+  {
+    "name": "redis_create_database",
+    "title": "Create Redis Database",
+    "description": "Creates a new Upstash Redis database and returns it. Its credentials (password and REST tokens) are included only when include_credentials is true — set it when the user is going to configure an app with the new database; they can also be fetched later with redis_get_database. Without plan the database is free or pay-as-you-go, depending on whether the account has a payment method. Plans and prices: https://upstash.com/pricing/redis.md; when the user picks a fixed tier, confirm its monthly price with them first.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Database name (alphanumeric)"
+        },
+        "include_credentials": {
+          "description": "Set true only when the user asks for connection details or wants to configure an app with this resource: the result then includes its credentials (REST tokens, password). Default false — metadata only. On a read-only connection credentials are omitted regardless",
+          "type": "boolean"
+        },
+        "plan": {
+          "description": "Plan to create the database on. On the pricing page \"Pay as You Go\" is payg and \"Fixed 250MB\" … \"Fixed 500GB\" are fixed_250mb … fixed_500gb",
+          "type": "string",
+          "enum": [
+            "free",
+            "payg",
+            "fixed_250mb",
+            "fixed_1gb",
+            "fixed_5gb",
+            "fixed_10gb",
+            "fixed_50gb",
+            "fixed_100gb",
+            "fixed_500gb"
+          ]
+        },
+        "primaryRegion": {
+          "type": "string",
+          "description": "Primary region, e.g. us-east-1, eu-west-1"
+        },
+        "readRegions": {
+          "description": "Optional read-replica regions",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "primaryRegion"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Create Redis Database"
+    }
+  },
+  {
+    "name": "redis_rename_database",
+    "title": "Rename Redis Database",
+    "description": "Renames an Upstash Redis database.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "The new database name (alphanumeric)"
+        }
+      },
+      "required": [
+        "databaseId",
+        "name"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Rename Redis Database"
+    }
+  },
+  {
+    "name": "redis_set_eviction",
+    "title": "Set Redis Eviction",
+    "description": "Enables or disables key eviction for an Upstash Redis database.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "true to enable eviction, false to disable"
+        }
+      },
+      "required": [
+        "databaseId",
+        "enabled"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Set Redis Eviction"
+    }
+  },
+  {
+    "name": "redis_set_auto_upgrade",
+    "title": "Set Redis Auto-Upgrade",
+    "description": "Enables or disables automatic plan upgrade for an Upstash Redis database.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "true to enable auto-upgrade, false to disable"
+        }
+      },
+      "required": [
+        "databaseId",
+        "enabled"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Set Redis Auto-Upgrade"
+    }
+  },
+  {
+    "name": "redis_change_plan",
+    "title": "Change Redis Plan",
+    "description": "Moves an Upstash Redis database to another plan: pay-as-you-go (billed per command) or a fixed monthly tier. Prices and limits: https://upstash.com/pricing/redis.md — its \"Pay as You Go\" is payg and \"Fixed 250MB\" … \"Fixed 500GB\" are fixed_250mb … fixed_500gb. The current plan is the database's type and reserved_type in redis_get_database. A database cannot be moved back to the free plan, and the plan can change at most once every 5 minutes. prod_pack and auto_upgrade can be set in the same call. This changes what the account is billed: tell the user the price from the pricing page and get their confirmation before calling.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "plan": {
+          "type": "string",
+          "enum": [
+            "payg",
+            "fixed_250mb",
+            "fixed_1gb",
+            "fixed_5gb",
+            "fixed_10gb",
+            "fixed_50gb",
+            "fixed_100gb",
+            "fixed_500gb"
+          ],
+          "description": "The plan to move to"
+        },
+        "prod_pack": {
+          "description": "Also enable (true) or disable (false) Prod Pack; omit to leave it as it is",
+          "type": "boolean"
+        },
+        "auto_upgrade": {
+          "description": "Also enable or disable automatic plan upgrade; omit to leave it as it is",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "databaseId",
+        "plan"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Change Redis Plan"
+    }
+  },
+  {
+    "name": "redis_set_prod_pack",
+    "title": "Set Redis Prod Pack",
+    "description": "Enables or disables Prod Pack on an Upstash Redis database: a per-database monthly add-on for pay-as-you-go and fixed plans that adds an uptime SLA, multi-zone high availability, encryption at rest, SOC-2 compliance and Prometheus/Grafana/Datadog metrics. Price and the full feature list: https://upstash.com/pricing/redis.md. Only accounts with a payment method can enable it. This changes what the account is billed: tell the user the price from the pricing page and get their confirmation before calling.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "true to enable Prod Pack, false to disable it"
+        }
+      },
+      "required": [
+        "databaseId",
+        "enabled"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Set Redis Prod Pack"
+    }
+  },
+  {
+    "name": "redis_set_budget",
+    "title": "Set Redis Budget",
+    "description": "Sets the monthly spending cap of a pay-as-you-go Upstash Redis database; fixed plans have none. The month's bill never exceeds the cap. Below $1000 the database is also rate limited once the cap is reached; at $1000 and above it keeps serving at full speed. Email warnings go out at 70% and 90%. 0 removes the cap. Changing the budget, including to 0, lifts an active rate limit right away. A non-zero cap must be above what the database has already cost this month, and setting the value it already has fails with \"budget already set\". The current cap is budget in redis_get_database. How budgets work: https://upstash.com/pricing/redis.md. Confirm the amount with the user before calling.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "budget": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991,
+          "description": "Monthly spending cap in whole US dollars: 0 removes the cap, otherwise 20 to 10000"
+        }
+      },
+      "required": [
+        "databaseId",
+        "budget"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Set Redis Budget"
+    }
+  },
+  {
+    "name": "redis_update_read_regions",
+    "title": "Update Redis Read Regions",
+    "description": "Replaces the read regions of a global Upstash Redis database with the given list: regions not in it are removed along with their replicas, new ones are added. Pass the full list (redis_get_database shows the current read_regions and primary_region); an empty list removes every read region. The primary region can't be a read region, a free database can have at most one, and the regions can change at most once every 30 minutes. Regional, HIPAA and Enterprise databases are refused. Adding read regions costs more: on a fixed plan each one adds the plan's per-region price, and on pay-as-you-go every write is replicated to each read region and billed as another command, with storage counted in every region (https://upstash.com/pricing/redis.md). Confirm the regions and the cost with the user before calling.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "read_regions": {
+          "maxItems": 20,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "description": "The complete list of read regions the database should have, e.g. [\"us-west-2\", \"eu-central-1\"]"
+        }
+      },
+      "required": [
+        "databaseId",
+        "read_regions"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Update Redis Read Regions"
+    }
+  },
+  {
+    "name": "redis_reset_credentials",
+    "title": "Reset Redis Credentials",
+    "description": "Resets an Upstash Redis database's password and REST tokens (read-write and read-only). Every client still using the old ones fails from that moment, so the user has to update their apps' environment variables. Refused for HIPAA-compliant databases and for databases whose credentials are managed as Vercel Marketplace environment variables. Also refused for a database with Protect Credentials enabled: its new password is shown only once, which this tool never does, so it would be lost; reset it in the Upstash console. The new credentials are not in the result: fetch them with redis_get_database and include_credentials: true. Confirm with the user before calling.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        }
+      },
+      "required": [
+        "databaseId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Reset Redis Credentials"
+    }
+  },
+  {
+    "name": "redis_list_backups",
+    "title": "List Redis Backups",
+    "description": "Lists backups of an Upstash Redis database.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        }
+      },
+      "required": [
+        "databaseId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "List Redis Backups"
+    }
+  },
+  {
+    "name": "redis_create_backup",
+    "title": "Create Redis Backup",
+    "description": "Creates a manual backup of an Upstash Redis database.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name for the backup"
+        }
+      },
+      "required": [
+        "databaseId",
+        "name"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Create Redis Backup"
+    }
+  },
+  {
+    "name": "redis_delete_database",
+    "title": "Delete Redis Database",
+    "description": "PERMANENTLY deletes an Upstash Redis database and all of its data. This cannot be undone.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        }
+      },
+      "required": [
+        "databaseId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Delete Redis Database"
+    }
+  },
+  {
+    "name": "redis_run_command",
+    "title": "Run Redis Command",
+    "description": "Runs Redis commands directly on an Upstash Redis database over its REST API. No tokens needed — credentials are resolved server-side and never exposed. Not available for a database with Protect Credentials enabled (is_password_protected in redis_get_database): Upstash keeps no password for it. Each command is an array of strings, e.g. [[\"SET\",\"key\",\"value\"],[\"GET\",\"key\"]]. One command runs directly; several run as a pipeline. Note for SCAN: reuse the returned cursor, and stop to ask the user if results get large.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "commands": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": "Redis commands, each as an array of strings"
+        }
+      },
+      "required": [
+        "databaseId",
+        "commands"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Run Redis Command"
+    }
+  },
+  {
+    "name": "redis_get_insights",
+    "title": "Get Redis Insights",
+    "description": "Gets the Redis Insights series of a database, as the Upstash console's Insights tab shows them: latency percentiles (overall, read, write, command, Lua, replication, wait), throughput, bandwidth, disk, expired entries and replication lag, for the whole database and per region (or one replica). Also counters over the period (throttled commands, auth failures, over-size requests, undeliverable messages, Lua executions, failures, timeouts and memory-limit hits, REST commands, connections opened), each metric's mean now against the window before, and anomalies the backend detected (start, peak, baseline and change, heaviest first). Start with anomalies and counters when asked why a database is slow or failing. `metrics` trims the per-metric series, which are most of the response. Needs Prod Pack (or a Pro or Enterprise plan): without it the API answers 404 \"insights require Prod Pack\"; redis_set_prod_pack turns it on.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "period": {
+          "description": "Window the series and counters cover (default 1d)",
+          "type": "string",
+          "enum": [
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "3d",
+            "7d",
+            "30d"
+          ]
+        },
+        "replica": {
+          "description": "Narrow the series to one replica (a group key from `groups`); default: the whole database, per region",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "metrics": {
+          "description": "Return only these metrics' series, comparisons and anomalies (default: all)",
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "latency_p50",
+              "latency_p90",
+              "latency_p99",
+              "read_latency_99",
+              "write_latency_99",
+              "command_latency_99",
+              "replication_latency_999",
+              "wait_latency_99",
+              "lua_latency_p50",
+              "lua_latency_99",
+              "expired_entries",
+              "replication_lag",
+              "throughput",
+              "bandwidth",
+              "diskusage"
+            ]
+          }
+        }
+      },
+      "required": [
+        "databaseId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get Redis Insights"
+    }
+  },
+  {
+    "name": "redis_get_traffic",
+    "title": "Get Redis Traffic",
+    "description": "Gets where a Redis database's traffic comes from and how it is served: the client networks the proxies sampled (masked prefixes, cloud provider and region, share), the SDKs, platforms and runtimes clients report with their retry rate, routes from entry region to serving region with requests, connections, bytes, errors and whether they cross regions, the entry regions by share, the cross-region share of bytes, and REST vs. Lua command counts. Use it to find clients far from the database, or traffic served cross-region. Needs Prod Pack (or a Pro or Enterprise plan): without it the API answers 404 \"insights require Prod Pack\"; redis_set_prod_pack turns it on.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "period": {
+          "description": "Window the series and counters cover (default 1d)",
+          "type": "string",
+          "enum": [
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "3d",
+            "7d",
+            "30d"
+          ]
+        }
+      },
+      "required": [
+        "databaseId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get Redis Traffic"
+    }
+  },
+  {
+    "name": "qstash_list_users",
+    "title": "List QStash Users",
+    "description": "Lists the QStash users in the authorized account scope, one per region. Each region's REST tokens, and with `region` (\"eu\" or \"us\") that region's request signing keys ({ current, next }, fetched live), are included only when include_credentials is true and the connection is read-write; on a read-only connection they are omitted. The REST base URL for a region is https://qstash-<region>.upstash.io (e.g. qstash-us-east-1.upstash.io).",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "description": "Return only this region's user (with its request signing keys when include_credentials is true)",
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ]
+        },
+        "include_credentials": {
+          "description": "Set true only when the user asks for connection details or wants to configure an app with this resource: the result then includes its credentials (REST tokens, password). Default false — metadata only. On a read-only connection credentials are omitted regardless",
+          "type": "boolean"
+        }
+      }
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "List QStash Users"
+    }
+  },
+  {
+    "name": "qstash_get_stats",
+    "title": "Get QStash Usage Stats",
+    "description": "Gets usage statistics of a region's QStash user, which QStash and Workflow share. daily_requests has one point per day of the current month (y: QStash messages, workflow_message: the Workflow share of them, workflow_run: Workflow runs), as do daily_billings (cost) and daily_bandwidths; days still to come in the month are zeros. daily_qstash_messages (delivered, failed, retry, error, canceled, total) and daily_workflow_messages (success, failed, canceled, total) are today's running counts by outcome, sampled across `period` and reset at 00:00 UTC, so their last point is today so far. Also global parallelism over the period and the DLQ size. `service` keeps only one side's outcome series. With refresh, the API recomputes the cached figures first.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "service": {
+          "description": "Keep only QStash's or only Workflow's message series (default: both)",
+          "type": "string",
+          "enum": [
+            "qstash",
+            "workflow"
+          ]
+        },
+        "period": {
+          "description": "Window the time series cover; the API's default when omitted. Daily and monthly totals ignore it",
+          "type": "string",
+          "enum": [
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "3d",
+            "7d"
+          ]
+        },
+        "refresh": {
+          "description": "Ask the API to recompute the cached figures before reading them, as the Upstash console does when it opens the page. Needs a read-write connection; when the refresh is refused the cached figures are still returned, with refreshed: false",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "region"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get QStash Usage Stats"
+    }
+  },
+  {
+    "name": "qstash_set_plan",
+    "title": "Change QStash Plan",
+    "description": "Moves a region's QStash user to another plan: pay-as-you-go (billed per message) or a fixed monthly tier. QStash and Upstash Workflow share one QStash user per region, so this covers both. Prices: https://upstash.com/pricing/qstash.md (Workflow: https://upstash.com/pricing/workflow.md). On the pricing page \"Pay as You Go\" is payg, \"Fixed 1M\" is fixed_1m and \"Fixed 10M\" is fixed_10m. The current plan is type and reserved_type in qstash_list_users. The plan can change at most once an hour. This changes what the account is billed: tell the user the price from the pricing page and get their confirmation before calling.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "plan": {
+          "type": "string",
+          "enum": [
+            "payg",
+            "fixed_1m",
+            "fixed_10m"
+          ],
+          "description": "The plan to move to"
+        }
+      },
+      "required": [
+        "region",
+        "plan"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Change QStash Plan"
+    }
+  },
+  {
+    "name": "qstash_set_prod_pack",
+    "title": "Set QStash Prod Pack",
+    "description": "Enables or disables Prod Pack on a region's QStash user, a monthly add-on for pay-as-you-go and fixed plans that adds an uptime SLA, encryption at rest, SOC-2 compliance and Prometheus/Datadog metrics. QStash and Upstash Workflow share one QStash user per region, so this covers both. Prices: https://upstash.com/pricing/qstash.md (Workflow: https://upstash.com/pricing/workflow.md). Only accounts with a payment method can enable it, and asking for the state it is already in fails with \"Prod Pack is already enabled/disabled\". This changes what the account is billed: tell the user the price from the pricing page and get their confirmation before calling.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "true to enable Prod Pack, false to disable it"
+        }
+      },
+      "required": [
+        "region",
+        "enabled"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Set QStash Prod Pack"
+    }
+  },
+  {
+    "name": "qstash_set_budget",
+    "title": "Set QStash Budget",
+    "description": "Sets the monthly spending cap of a region's pay-as-you-go QStash user; fixed plans have none. Once the month's cost reaches the cap the bill stops growing and the user is rate limited. 0 removes the cap. Changing the budget, including to 0, lifts an active rate limit right away. A non-zero cap must be above what the user has already cost this month, and setting the value it already has fails with \"budget already set\". The current cap is budget in qstash_list_users. QStash and Upstash Workflow share one QStash user per region, so this covers both. Prices: https://upstash.com/pricing/qstash.md (Workflow: https://upstash.com/pricing/workflow.md). Confirm the amount with the user before calling.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "budget": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991,
+          "description": "Monthly spending cap in whole US dollars: 0 removes the cap, otherwise 20 to 10000"
+        }
+      },
+      "required": [
+        "region",
+        "budget"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Set QStash Budget"
+    }
+  },
+  {
+    "name": "qstash_reset_token",
+    "title": "Reset QStash Token",
+    "description": "Replaces a region's QStash token and read-only token with new ones. QStash and Workflow share one QStash user per region, so both stop accepting the old tokens from that moment: every app publishing with QSTASH_TOKEN, and every Workflow client, needs the new one. The request signing keys are not changed, so receivers verifying signatures keep working. The new tokens are not in the result: fetch them with qstash_list_users and include_credentials: true. Confirm with the user before calling.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        }
+      },
+      "required": [
+        "region"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Reset QStash Token"
+    }
+  },
+  {
+    "name": "qstash_publish_message",
+    "title": "Publish QStash Message",
+    "description": "Publishes a message to a destination URL via QStash. No tokens needed — the region's QStash token is resolved server-side.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "destinationUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL QStash should deliver the message to"
+        },
+        "body": {
+          "description": "Message body",
+          "type": "string"
+        },
+        "contentType": {
+          "description": "Content-Type of the body (default application/json)",
+          "type": "string"
+        },
+        "delaySeconds": {
+          "description": "Delivery delay in seconds",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "retries": {
+          "description": "Max retries on delivery failure",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "region",
+        "destinationUrl"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "title": "Publish QStash Message"
+    }
+  },
+  {
+    "name": "qstash_list_schedules",
+    "title": "List QStash Schedules",
+    "description": "Lists QStash schedules in a region.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        }
+      },
+      "required": [
+        "region"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "List QStash Schedules"
+    }
+  },
+  {
+    "name": "qstash_manage_schedule",
+    "title": "Manage QStash Schedule",
+    "description": "Manages a QStash schedule: create (destinationUrl + cron required), get, delete, pause or resume (scheduleId required).",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "create",
+            "get",
+            "delete",
+            "pause",
+            "resume"
+          ]
+        },
+        "scheduleId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "The QStash schedule ID"
+        },
+        "destinationUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "cron": {
+          "description": "Cron expression, e.g. */5 * * * *",
+          "type": "string"
+        },
+        "body": {
+          "description": "Message body for created schedules",
+          "type": "string"
+        }
+      },
+      "required": [
+        "region",
+        "action"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "title": "Manage QStash Schedule"
+    }
+  },
+  {
+    "name": "qstash_flow_control_get",
+    "title": "Get QStash Flow Control",
+    "description": "Gets flow-control state: rate/parallelism info for a flow-control key, or the account's global parallelism when key is omitted.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "key": {
+          "description": "Flow-control key (omit for global parallelism)",
+          "type": "string"
+        }
+      },
+      "required": [
+        "region"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get QStash Flow Control"
+    }
+  },
+  {
+    "name": "qstash_flow_control_manage",
+    "title": "Manage QStash Flow Control",
+    "description": "Manages a flow-control key: pause, resume, pin (payload = pin options JSON), unpin (payload = unpin options JSON) or reset_rate.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "key": {
+          "type": "string",
+          "description": "Flow-control key"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "pause",
+            "resume",
+            "pin",
+            "unpin",
+            "reset_rate"
+          ]
+        },
+        "payload": {
+          "description": "JSON options for pin/unpin",
+          "type": "string"
+        }
+      },
+      "required": [
+        "region",
+        "key",
+        "action"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Manage QStash Flow Control"
+    }
+  },
+  {
+    "name": "workflow_manage_run",
+    "title": "Manage Workflow Run",
+    "description": "Operates on a Workflow run. To inspect a run by ID (its state, steps and errors, whether it has finished or not), use logs_list with service workflow and workflowRunId instead. get_steps is the narrower view: the live step state of a run that is still in progress. For a run that has finished or been cancelled, get_steps falls back to that run's log entry and says so. cancel asks QStash to stop the run and is asynchronous: the run moves to RUN_CANCELED in logs_list (service workflow) after a short delay, and the cancel call itself does not confirm that a run with this ID existed. Check logs_list, not get_steps, to verify a cancel.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "get_steps",
+            "cancel"
+          ]
+        },
+        "workflowRunId": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The workflow run ID, which always starts with wfr_. A custom ID passed as workflowRunId when triggering is stored with that prefix (my-run-1 becomes wfr_my-run-1), and the prefix is required here. logs_list (service workflow) shows the exact IDs."
+        }
+      },
+      "required": [
+        "region",
+        "action",
+        "workflowRunId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Manage Workflow Run"
+    }
+  },
+  {
+    "name": "logs_list",
+    "title": "List Logs",
+    "description": "Lists delivery/run logs for QStash messages or Workflow runs (service picks which), newest first. Paginated via cursor. This is the way to inspect a Workflow run by ID, whether it has finished or is still running: pass service workflow and workflowRunId, and the entry holds the run's state, its steps and their error bodies, in one call. workflowRunId, workflowUrl, state, workflowCreatedAt and label filter Workflow runs and are refused for service qstash; count works for both.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "qstash",
+            "workflow"
+          ],
+          "description": "Which service the operation targets: plain QStash messaging or Upstash Workflow"
+        },
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "cursor": {
+          "description": "Pagination cursor from a previous call",
+          "type": "string"
+        },
+        "count": {
+          "description": "Maximum number of entries (Workflow: runs) to return",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "workflowRunId": {
+          "description": "Workflow only: return just this run. IDs start with wfr_ (a custom ID my-run-1 is stored as wfr_my-run-1). Several runs can share an ID; workflowCreatedAt picks one.",
+          "type": "string",
+          "minLength": 1
+        },
+        "workflowUrl": {
+          "description": "Workflow only: runs of this workflow endpoint URL (exact match)",
+          "type": "string"
+        },
+        "state": {
+          "description": "Workflow only: runs that reached this state. Every run has reached RUN_STARTED, so it matches all runs; runs still in progress are the ones whose workflowState is RUN_STARTED in the result.",
+          "type": "string",
+          "enum": [
+            "RUN_STARTED",
+            "RUN_SUCCESS",
+            "RUN_FAILED",
+            "RUN_CANCELED"
+          ]
+        },
+        "workflowCreatedAt": {
+          "description": "Workflow only: the run's creation time in Unix milliseconds, as its workflowRunCreatedAt field shows",
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "label": {
+          "description": "Workflow only: runs triggered with this label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "service",
+        "region"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "List Logs"
+    }
+  },
+  {
+    "name": "dlq_list",
+    "title": "List Dead Letter Queue",
+    "description": "Lists the dead-letter queue for QStash messages or Workflow runs (service picks which). Paginated via cursor.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "qstash",
+            "workflow"
+          ],
+          "description": "Which service the operation targets: plain QStash messaging or Upstash Workflow"
+        },
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "cursor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "service",
+        "region"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "List Dead Letter Queue"
+    }
+  },
+  {
+    "name": "dlq_manage",
+    "title": "Manage Dead Letter Queue",
+    "description": "Manages a dead-letter-queue entry: get or delete (QStash and Workflow), restart or resume (Workflow only).",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "qstash",
+            "workflow"
+          ],
+          "description": "Which service the operation targets: plain QStash messaging or Upstash Workflow"
+        },
+        "region": {
+          "type": "string",
+          "enum": [
+            "eu",
+            "us"
+          ],
+          "description": "QStash region of your QStash user"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "get",
+            "delete",
+            "restart",
+            "resume"
+          ]
+        },
+        "dlqId": {
+          "type": "string",
+          "description": "The DLQ entry ID"
+        }
+      },
+      "required": [
+        "service",
+        "region",
+        "action",
+        "dlqId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "title": "Manage Dead Letter Queue"
+    }
+  },
+  {
+    "name": "index_list",
+    "title": "List Indexes",
+    "description": "Lists the Upstash Vector indexes or Search databases in the authorized account scope. Never includes tokens — call index_get with include_credentials for one of them.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        }
+      },
+      "required": [
+        "service"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "List Indexes"
+    }
+  },
+  {
+    "name": "index_get",
+    "title": "Get Index",
+    "description": "Gets details of one Vector index or Search database (endpoint, models, limits, usage). Its REST tokens are included only when include_credentials is true and the connection is read-write; on a read-only connection they are omitted (get them from the Upstash console).",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "include_credentials": {
+          "description": "Set true only when the user asks for connection details or wants to configure an app with this resource: the result then includes its credentials (REST tokens, password). Default false — metadata only. On a read-only connection credentials are omitted regardless",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "service",
+        "indexId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get Index"
+    }
+  },
+  {
+    "name": "index_get_stats",
+    "title": "Get Index Usage Stats",
+    "description": "Gets usage statistics of one Vector index or Search database: queries and updates today and this month, storage, bandwidth and cost this month, queries and updates per day, throughput and latency (mean and p99) over the period, and document count and data size over time. Search databases add rerank and input-enrichment figures.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "period": {
+          "description": "Window the time series cover; the API's default when omitted. Daily and monthly totals ignore it",
+          "type": "string",
+          "enum": [
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "3d",
+            "7d"
+          ]
+        }
+      },
+      "required": [
+        "service",
+        "indexId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get Index Usage Stats"
+    }
+  },
+  {
+    "name": "index_create",
+    "title": "Create Index",
+    "description": "Creates a Vector index or a Search database and returns it. Its REST tokens are included only when include_credentials is true — set it when the user is going to configure an app with it; they can also be fetched later with index_get. Search takes only name, region and plan — its embedding, reranking and enrichment models are fixed by the service, and its named indexes are created implicitly by the first search_upsert. Vector takes the rest: dimensions come from the embedding model when one is given, so pass dimensionCount only for an index you will supply your own vectors to; a SPARSE index takes neither and is described by sparseEmbeddingModel alone; a HYBRID index takes both models or neither. Plans and prices (Search is billed as Vector): https://upstash.com/pricing/vector.md; when the user picks fixed, confirm its monthly price with them first.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "name": {
+          "type": "string",
+          "description": "Index or database name"
+        },
+        "include_credentials": {
+          "description": "Set true only when the user asks for connection details or wants to configure an app with this resource: the result then includes its credentials (REST tokens, password). Default false — metadata only. On a read-only connection credentials are omitted regardless",
+          "type": "boolean"
+        },
+        "region": {
+          "type": "string",
+          "description": "Region to create in. Vector: an AWS or GCP region such as us-east-1 or eu-west-1 (the API rejects one it has no pool for). Search: only us-central1 or eu-west-1"
+        },
+        "indexType": {
+          "description": "Vector only. Index type (default DENSE)",
+          "type": "string",
+          "enum": [
+            "DENSE",
+            "SPARSE",
+            "HYBRID"
+          ]
+        },
+        "dimensionCount": {
+          "description": "Vector only. Required for a DENSE index with no embedding model; derived from the model otherwise, and rejected for SPARSE",
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "similarityFunction": {
+          "description": "Vector only. Similarity function (default EUCLIDEAN). Not applicable to SPARSE",
+          "type": "string",
+          "enum": [
+            "COSINE",
+            "EUCLIDEAN",
+            "DOT_PRODUCT"
+          ]
+        },
+        "embeddingModel": {
+          "description": "Vector only. Upstash-hosted dense embedding model, so you can upsert text instead of vectors. Sets dimensionCount",
+          "type": "string",
+          "enum": [
+            "BGE_SMALL_EN_V1_5",
+            "BGE_BASE_EN_V1_5",
+            "BGE_LARGE_EN_V1_5",
+            "BGE_M3",
+            "TEXT_EMBEDDING_3_SMALL"
+          ]
+        },
+        "sparseEmbeddingModel": {
+          "description": "Vector only. Sparse embedding model, for SPARSE and HYBRID indexes",
+          "type": "string",
+          "enum": [
+            "BGE_M3",
+            "BM25"
+          ]
+        },
+        "plan": {
+          "description": "Plan (default: free for accounts without a payment method, payg otherwise)",
+          "type": "string",
+          "enum": [
+            "free",
+            "payg",
+            "fixed",
+            "pro"
+          ]
+        }
+      },
+      "required": [
+        "service",
+        "name",
+        "region"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Create Index"
+    }
+  },
+  {
+    "name": "index_set_plan",
+    "title": "Change Index Plan",
+    "description": "Moves a Vector index or a Search database to another plan: payg (billed per request) or fixed (a flat monthly price). Search is billed as Vector, so one pricing page covers both: https://upstash.com/pricing/vector.md — its \"Pay as You Go\" is payg and \"Fixed\" is fixed; Pro is sold by sales. The current plan is type in index_get. Only an index already on a paid plan can switch; the API refuses a free one. This changes what the account is billed: tell the user the price from the pricing page and get their confirmation before calling.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "plan": {
+          "type": "string",
+          "enum": [
+            "payg",
+            "fixed"
+          ],
+          "description": "The plan to move to"
+        }
+      },
+      "required": [
+        "service",
+        "indexId",
+        "plan"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Change Index Plan"
+    }
+  },
+  {
+    "name": "index_reset_credentials",
+    "title": "Reset Index Credentials",
+    "description": "Resets the REST token and read-only token of a Vector index or a Search database. Every client still using the old ones fails from that moment, so the user has to update their apps' environment variables. The new tokens are not in the result: fetch them with index_get and include_credentials: true. Confirm with the user before calling.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        }
+      },
+      "required": [
+        "service",
+        "indexId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Reset Index Credentials"
+    }
+  },
+  {
+    "name": "index_delete",
+    "title": "Delete Index",
+    "description": "PERMANENTLY deletes an entire Vector index or Search database, everything stored in it and its credentials. This cannot be undone. To empty one while keeping it, use index_reset; to remove a single namespace or named index, use index_delete_namespace.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        }
+      },
+      "required": [
+        "service",
+        "indexId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Delete Index"
+    }
+  },
+  {
+    "name": "index_info",
+    "title": "Get Index Info",
+    "description": "Gets runtime info: total and pending document counts, index size, and a per-namespace breakdown. For Search those namespaces are its named indexes, with their document counts.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        }
+      },
+      "required": [
+        "service",
+        "indexId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get Index Info"
+    }
+  },
+  {
+    "name": "index_list_namespaces",
+    "title": "List Index Namespaces",
+    "description": "Lists the namespaces of a Vector index — or, for a Search database, its named indexes, which are the same thing. This is what search.listIndexes() calls.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        }
+      },
+      "required": [
+        "service",
+        "indexId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "List Index Namespaces"
+    }
+  },
+  {
+    "name": "index_fetch",
+    "title": "Fetch Index Documents",
+    "description": "Fetches documents by ID. Payload e.g. {\"ids\":[\"a\",\"b\"],\"includeMetadata\":true}, or {\"prefix\":\"doc-\",\"includeMetadata\":true} to match an ID prefix.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "namespace": {
+          "description": "Vector: the namespace (omit for the default one). Search: the named index, which is required — list them with index_list_namespaces",
+          "type": "string"
+        },
+        "payload": {
+          "type": "string",
+          "description": "JSON fetch payload"
+        }
+      },
+      "required": [
+        "service",
+        "indexId",
+        "payload"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Fetch Index Documents"
+    }
+  },
+  {
+    "name": "index_range",
+    "title": "Range Over Index Documents",
+    "description": "Iterates through the documents of a namespace, a page at a time. Payload e.g. {\"cursor\":\"0\",\"limit\":100,\"includeMetadata\":true}; reuse the returned cursor for the next page, and stop to ask the user if the results get large.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "namespace": {
+          "description": "Vector: the namespace (omit for the default one). Search: the named index, which is required — list them with index_list_namespaces",
+          "type": "string"
+        },
+        "payload": {
+          "type": "string",
+          "description": "JSON range payload"
+        }
+      },
+      "required": [
+        "service",
+        "indexId",
+        "payload"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Range Over Index Documents"
+    }
+  },
+  {
+    "name": "index_delete_documents",
+    "title": "Delete Index Documents",
+    "description": "Deletes documents from a namespace, leaving the namespace and the index in place. Payload e.g. {\"ids\":[\"a\",\"b\"]}, {\"prefix\":\"doc-\"} or {\"filter\":\"...\"}. To empty a namespace entirely use index_reset; to delete the index itself use index_delete.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "namespace": {
+          "description": "Vector: the namespace (omit for the default one). Search: the named index, which is required — list them with index_list_namespaces",
+          "type": "string"
+        },
+        "payload": {
+          "type": "string",
+          "description": "JSON delete payload"
+        }
+      },
+      "required": [
+        "service",
+        "indexId",
+        "payload"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Delete Index Documents"
+    }
+  },
+  {
+    "name": "index_reset",
+    "title": "Reset Index",
+    "description": "PERMANENTLY deletes every document in a namespace, leaving the empty namespace behind. Set allNamespaces to empty the whole index instead. This cannot be undone.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "namespace": {
+          "description": "Vector: the namespace (omit for the default one). Search: the named index, which is required — list them with index_list_namespaces",
+          "type": "string"
+        },
+        "allNamespaces": {
+          "description": "Empty every namespace of the index rather than one. Cannot be combined with namespace",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "service",
+        "indexId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Reset Index"
+    }
+  },
+  {
+    "name": "index_update",
+    "title": "Update Index",
+    "description": "Updates one existing document in place, without re-sending the rest of it. Payload e.g. {\"id\":\"a\",\"metadata\":{...},\"metadataUpdateMode\":\"patch\"} to merge into the existing metadata, or \"overwrite\" (the default) to replace it; may also carry vector, sparseVector or data to re-embed. Does nothing if the id does not exist — use vector_upsert or search_upsert to create.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "namespace": {
+          "description": "Vector: the namespace (omit for the default one). Search: the named index, which is required — list them with index_list_namespaces",
+          "type": "string"
+        },
+        "payload": {
+          "type": "string",
+          "description": "JSON update payload"
+        }
+      },
+      "required": [
+        "service",
+        "indexId",
+        "payload"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Update Index"
+    }
+  },
+  {
+    "name": "index_rename_namespace",
+    "title": "Rename Index Namespace",
+    "description": "Renames a namespace — for a Search database, one of its named indexes. The new name must not already be in use, and the default namespace cannot be renamed.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "The namespace to rename, or for Search the named index"
+        },
+        "newNamespace": {
+          "type": "string",
+          "description": "The new name"
+        }
+      },
+      "required": [
+        "service",
+        "indexId",
+        "namespace",
+        "newNamespace"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Rename Index Namespace"
+    }
+  },
+  {
+    "name": "index_delete_namespace",
+    "title": "Delete Index Namespace",
+    "description": "PERMANENTLY deletes a namespace and everything in it — for a Search database, one of its named indexes. This cannot be undone. The default namespace cannot be deleted; empty it with index_reset instead.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "service": {
+          "type": "string",
+          "enum": [
+            "vector",
+            "search"
+          ],
+          "description": "Which product the index belongs to. A Vector index and a Search database are separate resources — the API returns 404 if this names the wrong one"
+        },
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "The namespace to delete, or for Search the named index. Required — there is no default"
+        }
+      },
+      "required": [
+        "service",
+        "indexId",
+        "namespace"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Delete Index Namespace"
+    }
+  },
+  {
+    "name": "vector_query",
+    "title": "Query Vectors",
+    "description": "Queries a Vector index by vector similarity. No tokens needed. Payload per the Vector REST API, e.g. {\"vector\":[...],\"topK\":10,\"includeMetadata\":true} — or with useData=true, {\"data\":\"text to embed\",\"topK\":10} for embedding-model indexes. For a Search database use search_query instead.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "payload": {
+          "type": "string",
+          "description": "JSON payload as the Vector REST API expects"
+        },
+        "namespace": {
+          "description": "Namespace to query (omit for the default namespace)",
+          "type": "string"
+        },
+        "useData": {
+          "description": "true = /query-data (server-side embedding)",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "indexId",
+        "payload"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Query Vectors"
+    }
+  },
+  {
+    "name": "vector_upsert",
+    "title": "Upsert Vectors",
+    "description": "Upserts vectors into a Vector index. Payload e.g. [{\"id\":\"a\",\"vector\":[...],\"metadata\":{...}}] — or with useData=true, [{\"id\":\"a\",\"data\":\"text to embed\"}]. For a Search database use search_upsert instead.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "payload": {
+          "type": "string",
+          "description": "JSON payload as the Vector REST API expects"
+        },
+        "namespace": {
+          "description": "Namespace to write to (omit for the default namespace)",
+          "type": "string"
+        },
+        "useData": {
+          "description": "true = /upsert-data (server-side embedding)",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "indexId",
+        "payload"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Upsert Vectors"
+    }
+  },
+  {
+    "name": "search_query",
+    "title": "Search Documents",
+    "description": "Runs a full-text and semantic search over one named index of a Search database. No tokens needed. Payload per the Search REST API, e.g. {\"query\":\"space odyssey\",\"limit\":5,\"reranking\":true}.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "indexName": {
+          "type": "string",
+          "description": "The named index inside the Search database"
+        },
+        "payload": {
+          "type": "string",
+          "description": "JSON search payload"
+        }
+      },
+      "required": [
+        "indexId",
+        "indexName",
+        "payload"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Search Documents"
+    }
+  },
+  {
+    "name": "search_upsert",
+    "title": "Upsert Search Documents",
+    "description": "Upserts documents into a named index of a Search database (server-side embedding), creating the named index if it does not exist. Payload e.g. [{\"id\":\"movie-1\",\"content\":{\"title\":\"Star Wars\"},\"metadata\":{...}}].",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "indexId": {
+          "type": "string",
+          "description": "The Vector index ID, or the Search database ID"
+        },
+        "indexName": {
+          "type": "string",
+          "description": "The named index inside the Search database"
+        },
+        "payload": {
+          "type": "string",
+          "description": "JSON documents payload"
+        }
+      },
+      "required": [
+        "indexId",
+        "indexName",
+        "payload"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Upsert Search Documents"
+    }
+  },
+  {
+    "name": "box_manage",
+    "title": "Manage Boxes",
+    "description": "Manages Upstash Boxes — sandboxed cloud containers with a shell, a filesystem and an optional headless browser. Actions: create (set browser=true to make box_browser usable), list (optionally filtered by label or status), get, status (cheaper than get, for polling), delete (permanent, takes the workspace with it; pass box_id for one box or box_ids for several in one call), pause, resume, fork (copies an idle or paused non-ephemeral box), reset (wipes the workspace back to a fresh box; the id survives). Every action except create and list needs box_id (delete accepts box_ids instead). There is no delete-everything: to clear an account, list first and pass the ids you mean. Ephemeral boxes need no paid plan and are cleaned up when their TTL expires; keep-alive boxes require one. size and keep_alive set what a box costs and cannot be changed after create; prices per size: https://upstash.com/pricing/box.md. Confirm with the user before creating a keep-alive box, which is billed monthly.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "create",
+            "list",
+            "get",
+            "status",
+            "delete",
+            "pause",
+            "resume",
+            "fork",
+            "reset"
+          ],
+          "description": "The action to perform"
+        },
+        "box_id": {
+          "description": "Box ID (required for get, status, pause, resume, fork, reset; delete takes this or box_ids)",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$"
+        },
+        "box_ids": {
+          "description": "Several box IDs to delete in one call (delete only, at most 50); the result counts how many were deleted and how many failed",
+          "minItems": 1,
+          "maxItems": 50,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._-]+$",
+            "description": "The box ID (its name works too)"
+          }
+        },
+        "name": {
+          "description": "Display name for the box (create)",
+          "type": "string"
+        },
+        "model": {
+          "description": "LLM model the box's agent runs, e.g. 'claude/sonnet_4_6' or 'openai/o4-mini' (create)",
+          "type": "string"
+        },
+        "agent": {
+          "description": "Agent to install in the box (create, default: claude-code)",
+          "type": "string",
+          "enum": [
+            "claude-code",
+            "codex",
+            "opencode",
+            "cursor"
+          ]
+        },
+        "runtime": {
+          "description": "Runtime image, e.g. 'node' or 'python' (create, default: node)",
+          "type": "string"
+        },
+        "browser": {
+          "description": "Give the box a headless Chromium (create). Without it box_browser fails with 'browser is not enabled for this box'",
+          "type": "boolean"
+        },
+        "size": {
+          "description": "Box size (create, default: small)",
+          "type": "string",
+          "enum": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        "labels": {
+          "description": "Labels to tag the box with (create)",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "env_vars": {
+          "description": "Environment variables to set inside the box (create)",
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "clone_repo": {
+          "description": "Git repository URL to clone into the box on startup (create)",
+          "type": "string"
+        },
+        "clone_token": {
+          "description": "Token for cloning a private repository (create)",
+          "type": "string"
+        },
+        "ephemeral": {
+          "description": "Create a throwaway box that is deleted when its TTL expires (create)",
+          "type": "boolean"
+        },
+        "keep_alive": {
+          "description": "Keep the box running rather than idling it (create, requires a paid plan; mutually exclusive with ephemeral)",
+          "type": "boolean"
+        },
+        "init_command": {
+          "description": "Startup script run when the box starts; keep-alive boxes only (create)",
+          "type": "string"
+        },
+        "skills": {
+          "description": "Skills to install, each owner/repo/skill-name (create)",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "network_policy": {
+          "description": "Outbound network policy; the lists apply to mode custom (create)",
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "allow-all",
+                "deny-all",
+                "custom"
+              ]
+            },
+            "allowed_domains": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowed_cidrs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "denied_cidrs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "mode"
+          ]
+        },
+        "attach_headers": {
+          "description": "Headers injected into outbound requests, keyed by host pattern, e.g. {'api.stripe.com': {'Authorization': 'Bearer ...'}} (create)",
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "mcp_servers": {
+          "description": "MCP servers for the box's agent, an npm package or a remote url each (create)",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "package": {
+                "description": "npm package to run locally",
+                "type": "string"
+              },
+              "url": {
+                "description": "Remote MCP server endpoint",
+                "type": "string"
+              },
+              "args": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "headers": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "git_user_name": {
+          "description": "git user.name inside the box (create)",
+          "type": "string"
+        },
+        "git_user_email": {
+          "description": "git user.email inside the box (create)",
+          "type": "string"
+        },
+        "ttl": {
+          "description": "Lifetime in seconds of an ephemeral box (create, max 259200 = 3 days)",
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 259200
+        },
+        "label": {
+          "description": "Only return boxes carrying this label (list)",
+          "type": "string"
+        },
+        "status": {
+          "description": "Which boxes to list (list, default: active)",
+          "type": "string",
+          "enum": [
+            "active",
+            "deleted"
+          ]
+        }
+      },
+      "required": [
+        "action"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Manage Boxes"
+    }
+  },
+  {
+    "name": "box_exec",
+    "title": "Run Command in Box",
+    "description": "Runs a shell command inside a box, waits for it to finish, and returns its exit code and output. Use it for file operations, package installs, builds, tests — anything a shell does. For repository work (clone, commit, push, pull request) use box_git, which also puts the GitHub credentials into the box. The command is an argv array, e.g. ['bash', '-c', 'ls -la']; an inline program is one too: ['node', '-e', code], ['python3', '-c', code] or ['npx', 'tsx', '-e', code], and content written with ['sh', '-c', 'printf %s \"$1\" > \"$2\"', 'sh', content, path] needs no quoting. `folder` defaults to /workspace/home, the workspace root; a clone sits at /workspace/home/<repo name>. To start something long-running (a dev server, say) without blocking, detach it inside the shell: ['sh', '-c', '( my-server > server.log 2>&1 & )']. A paused box is resumed first. Read-only OAuth connections cannot run commands: the box API refuses them with 403.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "box_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "The box ID (its name works too)"
+        },
+        "command": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Command and arguments as an array, e.g. ['bash', '-c', 'ls -la']"
+        },
+        "folder": {
+          "description": "Working directory inside the box (defaults to /workspace/home)",
+          "type": "string"
+        }
+      },
+      "required": [
+        "box_id",
+        "command"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "title": "Run Command in Box"
+    }
+  },
+  {
+    "name": "box_browser",
+    "title": "Control Box Browser",
+    "description": "Drives the headless Chromium in a box created with browser=true. Actions: goto (navigate to url and return the page), content (read the current page as title/url/text/links), screenshot (PNG of the page — returned as an image unless path is given, in which case it is saved into the box at that path instead), tabs (list the open tabs), tab_new (open a tab, optionally at url), tab_close (needs tab), live_view (a view-only page a person can open to watch the tab live — frames flow out, no input goes in, so hand the URL to the user rather than trying to click in it). box_id is required for every action.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "goto",
+            "content",
+            "screenshot",
+            "tabs",
+            "tab_new",
+            "tab_close",
+            "live_view"
+          ],
+          "description": "The action to perform"
+        },
+        "box_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "The box ID (its name works too)"
+        },
+        "url": {
+          "description": "URL to open (required for goto, optional for tab_new)",
+          "type": "string",
+          "maxLength": 2048
+        },
+        "tab": {
+          "description": "CDP target id of the tab, from the tabs action (required for tab_close; elsewhere the active tab is used when omitted)",
+          "type": "string"
+        },
+        "full_page": {
+          "description": "Capture the whole scrollable page rather than the viewport (screenshot)",
+          "type": "boolean"
+        },
+        "path": {
+          "description": "Save the screenshot at this path inside the box instead of returning the image (screenshot)",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "box_id"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "title": "Control Box Browser"
+    }
+  },
+  {
+    "name": "box_git",
+    "title": "Run Git in Box",
+    "description": "Runs git inside a box. Authentication comes from the GitHub installation linked to the Upstash account — the tool takes no token, and a private repo works only if that installation can see it. Actions: clone (needs repo), status, diff, commit (needs message), checkout (needs branch), push, create_pr (needs title), create_issue (needs title). Anything else git does (add, log, rebase) is a box_exec command such as ['git', 'log', '-1']. Clone with this tool rather than with git in box_exec: clone is what puts the GitHub credentials into the box, and without them push and create_pr fail with a 500. A clone lands at /workspace/home/<repo name>; pass that as `folder` on every other action, since the default is the workspace root, which is not a repository. create_pr opens the pull request for the branch as it exists on the remote and pushes nothing itself, so push first, and give push the branch name: without one the API pushes to a branch named after the box. Read-only OAuth connections are refused with 403 on the actions that write (clone, commit, checkout, push, create_pr, create_issue).",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "clone",
+            "status",
+            "diff",
+            "commit",
+            "checkout",
+            "push",
+            "create_pr",
+            "create_issue"
+          ],
+          "description": "The action to perform"
+        },
+        "box_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "The box ID (its name works too)"
+        },
+        "repo": {
+          "description": "Repository URL to clone, https/http/git/ssh (required for clone)",
+          "type": "string"
+        },
+        "branch": {
+          "description": "Branch: to clone, to switch to (required for checkout), or to push",
+          "type": "string"
+        },
+        "folder": {
+          "description": "Working directory inside the box, normally the clone's folder such as /workspace/home/<repo name> (defaults to /workspace/home, which is not a repository). For clone: the directory name to clone into, relative to /workspace/home",
+          "type": "string"
+        },
+        "depth": {
+          "description": "Clone depth; 0 or omitted clones the full history (clone)",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "message": {
+          "description": "Commit message (required for commit)",
+          "type": "string"
+        },
+        "author_name": {
+          "description": "Override the commit author name (commit)",
+          "type": "string"
+        },
+        "author_email": {
+          "description": "Override the commit author email (commit)",
+          "type": "string"
+        },
+        "title": {
+          "description": "Title (required for create_pr and create_issue)",
+          "type": "string"
+        },
+        "body": {
+          "description": "Description (create_pr, create_issue)",
+          "type": "string"
+        },
+        "base": {
+          "description": "Branch the pull request merges into (create_pr, defaults to the repo's)",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "box_id"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "title": "Run Git in Box"
+    }
+  },
+  {
+    "name": "box_preview",
+    "title": "Manage Box Preview URLs",
+    "description": "Manages public preview URLs for ports inside a box, so a service running in it is reachable from the internet. Actions: create (needs port; basic_auth or bearer_token add a generated credential, which is returned once and only here), list, delete (needs port). box_id is required for every action.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "create",
+            "list",
+            "delete"
+          ],
+          "description": "The action to perform"
+        },
+        "box_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "The box ID (its name works too)"
+        },
+        "port": {
+          "description": "Port inside the box (required for create and delete)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "basic_auth": {
+          "description": "Protect the preview with a generated username and password (create)",
+          "type": "boolean"
+        },
+        "bearer_token": {
+          "description": "Protect the preview with a generated bearer token (create)",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "action",
+        "box_id"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "title": "Manage Box Preview URLs"
+    }
+  },
+  {
+    "name": "box_logs",
+    "title": "Get Box Logs",
+    "description": "Reads a box's timestamped log entries — system, user and agent sources — which is how to find out what happened inside it. Filterable by source, level, free-text search and a timestamp window.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "box_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "The box ID (its name works too)"
+        },
+        "limit": {
+          "description": "Maximum entries to return (max 1000, default 100)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "offset": {
+          "description": "Entries to skip, for paging (default 0)",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "source": {
+          "description": "Only entries from this source",
+          "type": "string",
+          "enum": [
+            "system",
+            "user",
+            "agent"
+          ]
+        },
+        "level": {
+          "description": "Only entries at this level",
+          "type": "string",
+          "enum": [
+            "info",
+            "warn",
+            "error"
+          ]
+        },
+        "search": {
+          "description": "Only entries whose message matches this text",
+          "type": "string"
+        },
+        "start_time": {
+          "description": "Only entries at or after this Unix timestamp (seconds)",
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "end_time": {
+          "description": "Only entries at or before this Unix timestamp (seconds)",
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "box_id"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get Box Logs"
+    }
+  },
+  {
+    "name": "box_runs",
+    "title": "List Box Runs",
+    "description": "Inspects a box's run history — agent prompts, shell executions and browser runs — with their status, output, token usage and cost. Actions: list, get (needs run_id), cancel (needs run_id; only a run that is still running can be cancelled). box_id is required for every action.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "list",
+            "get",
+            "cancel"
+          ],
+          "description": "The action to perform"
+        },
+        "box_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "The box ID (its name works too)"
+        },
+        "run_id": {
+          "description": "Run ID (required for get and cancel actions)",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$"
+        }
+      },
+      "required": [
+        "action",
+        "box_id"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "List Box Runs"
+    }
+  },
+  {
+    "name": "box_snapshots",
+    "title": "Manage Box Snapshots",
+    "description": "Manages box snapshots — full filesystem copies a new box can be built from. Actions: create (needs box_id), list (one box's snapshots, needs box_id), list_all (every snapshot in the account), delete (needs box_id and snapshot_id), restore (needs snapshot_id; creates a NEW box from the snapshot and leaves the original alone, inheriting the snapshot's model and runtime unless they are overridden).",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "create",
+            "list",
+            "list_all",
+            "delete",
+            "restore"
+          ],
+          "description": "The action to perform. 'list' lists one box's snapshots, 'list_all' lists every snapshot in the account"
+        },
+        "box_id": {
+          "description": "Box ID (required for create, list, delete)",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$"
+        },
+        "snapshot_id": {
+          "description": "Snapshot ID (required for delete and restore)",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$"
+        },
+        "name": {
+          "description": "Name for the snapshot (create, auto-generated if omitted)",
+          "type": "string"
+        },
+        "model": {
+          "description": "LLM model for the restored box (restore, defaults to the snapshot's)",
+          "type": "string"
+        },
+        "runtime": {
+          "description": "Override the snapshot's runtime for the restored box (restore)",
+          "type": "string"
+        },
+        "labels": {
+          "description": "Labels for the restored box (restore)",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "env_vars": {
+          "description": "Environment variables for the restored box (restore)",
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "ephemeral": {
+          "description": "Create the restored box as ephemeral (restore)",
+          "type": "boolean"
+        },
+        "ttl": {
+          "description": "Lifetime in seconds of a restored ephemeral box (restore, max 3 days)",
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 259200
+        }
+      },
+      "required": [
+        "action"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Manage Box Snapshots"
+    }
+  },
+  {
+    "name": "box_apikey",
+    "title": "Manage Box API Keys",
+    "description": "Manages Box API keys for the authorized account scope, the credential the Box SDK, CLI and deployed apps use. Actions: list (metadata only: id, name, prefix, never the secret), create (optional name; returns the secret once, so surface it to the user to store), delete (needs api_key_id; anything still using the key stops working immediately). A key is account-scoped and independent of this connection: it keeps working after the OAuth grant that created it is revoked, so tell the user to delete it, here or in the Upstash console, once it is no longer needed. Read-only OAuth grants get 403 on create and delete.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "list",
+            "create",
+            "delete"
+          ],
+          "description": "The action to perform"
+        },
+        "name": {
+          "description": "Display name for the key (create)",
+          "type": "string"
+        },
+        "api_key_id": {
+          "description": "Key id from list (required for delete)",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$"
+        }
+      },
+      "required": [
+        "action"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Manage Box API Keys"
+    }
+  },
+  {
+    "name": "box_schedules",
+    "title": "Manage Box Schedules",
+    "description": "Cron schedules that run a shell command or an agent prompt inside a box on a UTC cron expression. Actions: create (needs cron and either command or prompt), list, get, update, pause, resume, delete (the last five need schedule_id). update changes only the fields given, so a new cron leaves the command alone. timeout is milliseconds; 0 clears it on update. Read-only OAuth connections are refused with 403 on the actions that write.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "create",
+            "list",
+            "get",
+            "update",
+            "pause",
+            "resume",
+            "delete"
+          ],
+          "description": "The action to perform"
+        },
+        "box_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "The box ID (its name works too)"
+        },
+        "schedule_id": {
+          "description": "Schedule ID (required for get, update, pause, resume, delete)",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$"
+        },
+        "cron": {
+          "description": "Cron expression, UTC, e.g. '0 9 * * *'",
+          "type": "string"
+        },
+        "command": {
+          "description": "Command as an argv array, for a shell schedule",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prompt": {
+          "description": "Prompt, for an agent schedule",
+          "type": "string"
+        },
+        "folder": {
+          "description": "Working directory inside the box (defaults to /workspace/home)",
+          "type": "string"
+        },
+        "model": {
+          "description": "Model for an agent schedule",
+          "type": "string"
+        },
+        "timeout": {
+          "description": "Milliseconds; 0 clears it on update",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "action",
+        "box_id"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": true,
+      "title": "Manage Box Schedules"
+    }
+  },
+  {
+    "name": "box_config",
+    "title": "Manage Box Config",
+    "description": "Changes a running box's configuration. Actions: get (model, MCP servers and enabled skills; labels are on box_manage get); set_model (needs model); add_label and remove_label (need label); add_skill and remove_skill (need skill, as owner/repo/skill-name); add_mcp_server (needs mcp_server) and remove_mcp_server (needs name); set_network_policy (needs network_policy); set_git_identity (needs git_user_name and git_user_email); get_init_command, set_init_command (needs init_command) and delete_init_command, which apply to keep-alive boxes only. Size, browser and keep_alive are fixed at create time. Read-only OAuth connections are refused with 403 on the actions that write.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "get",
+            "set_model",
+            "add_label",
+            "remove_label",
+            "add_skill",
+            "remove_skill",
+            "add_mcp_server",
+            "remove_mcp_server",
+            "set_network_policy",
+            "set_git_identity",
+            "get_init_command",
+            "set_init_command",
+            "delete_init_command"
+          ],
+          "description": "The action to perform"
+        },
+        "box_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "The box ID (its name works too)"
+        },
+        "model": {
+          "description": "Model identifier (set_model)",
+          "type": "string"
+        },
+        "label": {
+          "description": "Label (add_label, remove_label)",
+          "type": "string"
+        },
+        "skill": {
+          "description": "Skill id, owner/repo/skill-name (add_skill, remove_skill)",
+          "type": "string"
+        },
+        "mcp_server": {
+          "description": "Server to add (add_mcp_server)",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "package": {
+              "description": "npm package to run locally",
+              "type": "string"
+            },
+            "url": {
+              "description": "Remote MCP server endpoint",
+              "type": "string"
+            },
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "headers": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "name": {
+          "description": "Server name (remove_mcp_server)",
+          "type": "string"
+        },
+        "network_policy": {
+          "description": "Outbound policy; the lists apply to mode custom (set_network_policy)",
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "allow-all",
+                "deny-all",
+                "custom"
+              ]
+            },
+            "allowed_domains": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowed_cidrs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "denied_cidrs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "mode"
+          ]
+        },
+        "git_user_name": {
+          "description": "git user.name (set_git_identity)",
+          "type": "string"
+        },
+        "git_user_email": {
+          "description": "git user.email (set_git_identity)",
+          "type": "string"
+        },
+        "init_command": {
+          "description": "Startup script (set_init_command)",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "box_id"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Manage Box Config"
+    }
+  },
+  {
+    "name": "box_env",
+    "title": "Manage Box Environment",
+    "description": "Account-level environment variables, merged into every box created afterwards; a box's own env_vars win for the same key, and a box that already exists is not changed. Actions: list (values come back masked), set (needs key and value), set_all (needs env_vars, and replaces the whole set), delete (needs key). Not a secrets store: a value set here is visible inside every future box. Read-only OAuth connections are refused with 403 on the actions that write.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "list",
+            "set",
+            "set_all",
+            "delete"
+          ],
+          "description": "The action to perform"
+        },
+        "key": {
+          "description": "Variable name (set, delete)",
+          "type": "string"
+        },
+        "value": {
+          "description": "Variable value (set)",
+          "type": "string"
+        },
+        "env_vars": {
+          "description": "The full set (set_all)",
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "action"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Manage Box Environment"
+    }
+  },
+  {
+    "name": "box_metrics",
+    "title": "Get Box Metrics",
+    "description": "Resource and token usage for a box. Actions: current (CPU, memory and disk right now), history (a time series; range such as 1h or 24h, step such as 1m), tokens (token counts and cost over the last days), steps (the agent's commits, one per prompt, newest first), step_diff (needs sha; the diff one step made).",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "current",
+            "history",
+            "tokens",
+            "steps",
+            "step_diff"
+          ],
+          "description": "The action to perform"
+        },
+        "box_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "The box ID (its name works too)"
+        },
+        "range": {
+          "description": "Time span for history, e.g. 1h, 24h, 7d",
+          "type": "string"
+        },
+        "step": {
+          "description": "Resolution for history, e.g. 1m, 5m, 1h",
+          "type": "string"
+        },
+        "days": {
+          "description": "Days of token usage to cover",
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sha": {
+          "description": "Step commit (step_diff)",
+          "type": "string",
+          "pattern": "^[0-9a-f]{4,40}$"
+        }
+      },
+      "required": [
+        "action",
+        "box_id"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get Box Metrics"
+    }
+  },
+  {
+    "name": "box_account",
+    "title": "Get Box Account",
+    "description": "Account-wide views across every box. Actions: summary (each active box with its cost; status deleted lists the deleted ones instead), billing (this month's token and compute totals), logs (log lines from all boxes; limit, offset, level, source, search, start_time and end_time filter them).",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "summary",
+            "billing",
+            "logs"
+          ],
+          "description": "The action to perform"
+        },
+        "status": {
+          "description": "Which boxes to summarise (summary, default: active)",
+          "type": "string",
+          "enum": [
+            "active",
+            "deleted"
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 1000
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "level": {
+          "type": "string",
+          "enum": [
+            "info",
+            "warn",
+            "error"
+          ]
+        },
+        "source": {
+          "type": "string"
+        },
+        "search": {
+          "type": "string"
+        },
+        "start_time": {
+          "description": "Unix seconds",
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "end_time": {
+          "description": "Unix seconds",
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "action"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Get Box Account"
+    }
+  },
+  {
+    "name": "blob_bucket",
+    "title": "Manage Blob Buckets",
+    "description": "Lists, gets, creates or deletes Upstash Blob buckets — object storage an agent can upload files to and link to afterwards. Blob has no plans to choose: storage, operations and bandwidth are free up to a monthly allowance and pay-as-you-go above it (https://upstash.com/pricing/blob.md). Actions: list (every bucket in the authorized account scope), get (needs bucket_id; with include_credentials the result also carries the bucket's `token`, the value `@upstash/blob` reads as UPSTASH_BLOB_TOKEN), stats (needs bucket_id; storage, bandwidth, operations and cost per day and per month, collected hourly, so today's row is partial), create (needs name), delete (needs bucket_id; permanent, and refused while the bucket still holds objects — empty it with blob_object delete first), reset_token (needs bucket_id; rotates the bucket token: the current token stops working at once, so apps need the new UPSTASH_BLOB_TOKEN from get with include_credentials; confirm with the user first). A public bucket serves its objects at a permanent URL under public_host, which is what you want for a link that has to keep working, such as an image embedded in a PR body; a private bucket has no public host and its objects are reachable only through short-lived signed URLs. The token is returned only by get with include_credentials on a read-write connection; on a read-only connection it is omitted regardless, and list, create, delete and reset_token never return it.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "list",
+            "get",
+            "stats",
+            "create",
+            "delete",
+            "reset_token"
+          ],
+          "description": "The action to perform"
+        },
+        "bucket_id": {
+          "description": "The bucket's id, from blob_bucket list (required for get, stats, delete and reset_token)",
+          "type": "string",
+          "minLength": 1
+        },
+        "days": {
+          "description": "stats only: daily rows to return, including today (max 90)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 90
+        },
+        "months": {
+          "description": "stats only: monthly rows to return, including this month (max 24)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 24
+        },
+        "include_credentials": {
+          "description": "get only. Set true only when the user asks for the bucket's credentials or wants to configure an app with it (UPSTASH_BLOB_TOKEN): the result then includes `token`. Default false — metadata only. On a read-only connection the token is omitted regardless",
+          "type": "boolean"
+        },
+        "name": {
+          "description": "Bucket name, unique within the account (required for create)",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "visibility": {
+          "description": "Whether the bucket's objects are served publicly (create, default: public). Public gives every object a permanent URL; private objects are reachable only through short-lived signed URLs",
+          "type": "string",
+          "enum": [
+            "public",
+            "private"
+          ]
+        }
+      },
+      "required": [
+        "action"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Manage Blob Buckets"
+    }
+  },
+  {
+    "name": "blob_upload_url",
+    "title": "Get Blob Upload URL",
+    "description": "Mints presigned PUT URLs for paths in a Blob bucket, so files are uploaded straight to storage from wherever they already are — a `curl` inside a box, a CI job — without their bytes passing through this server. Send the returned `headers` verbatim with the PUT: they are part of the signature, so a changed, dropped or added header is a 403 from storage. A URL lives at most 10 minutes, so mint it immediately before uploading rather than up front. On a public bucket each file also comes back with `public_url`, the permanent link to use once the upload succeeds (in a PR body, say); a private bucket has none. The result's `curl_example` is the first file's real command line.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "bucket_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The bucket's id, from blob_bucket list or create"
+        },
+        "files": {
+          "minItems": 1,
+          "maxItems": 20,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024,
+                "description": "Object key inside the bucket, e.g. 'proof/my-repo/01-before.png'. Slashes are folders; no '.' or '..' segments"
+              },
+              "content_type": {
+                "description": "Content type the object is stored as, e.g. 'image/png'. The upload must send exactly this",
+                "type": "string"
+              },
+              "size": {
+                "description": "Exact size of the file in bytes. When given it is pinned into the signature, so the URL cannot upload a different file",
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "path"
+            ]
+          },
+          "description": "The files to mint upload URLs for, one entry each"
+        },
+        "expires_in": {
+          "description": "How long the URLs live, in seconds (default and maximum 600, the lifetime of the credential that signs them)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 600
+        }
+      },
+      "required": [
+        "bucket_id",
+        "files"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Get Blob Upload URL"
+    }
+  },
+  {
+    "name": "blob_download_url",
+    "title": "Get Blob Download URL",
+    "description": "Mints short-lived presigned GET URLs for objects in a Blob bucket, so their bytes are downloaded straight from storage — a `curl` inside a box, a browser — without passing through this server. This is the way to read a **private** bucket, whose objects have no public link; on a public bucket the permanent `public_url` works too and is returned alongside. The URLs only read, so they are available on read-only connections. A URL lives at most 10 minutes; set `download_as` to have storage serve the object as an attachment with that filename. A missing object is a 404 from storage when the URL is fetched, not an error here.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "bucket_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The bucket's id, from blob_bucket list or create"
+        },
+        "files": {
+          "minItems": 1,
+          "maxItems": 20,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024,
+                "description": "Object key inside the bucket, as blob_object list returns it"
+              },
+              "download_as": {
+                "description": "Serve the object as a download with this filename instead of displaying it inline",
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
+              }
+            },
+            "required": [
+              "path"
+            ]
+          },
+          "description": "The objects to mint download URLs for, one entry each"
+        },
+        "expires_in": {
+          "description": "How long the URLs live, in seconds (default and maximum 600, the lifetime of the credential that signs them)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 600
+        }
+      },
+      "required": [
+        "bucket_id",
+        "files"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "title": "Get Blob Download URL"
+    }
+  },
+  {
+    "name": "blob_object",
+    "title": "Manage Blob Objects",
+    "description": "Lists or deletes objects in an Upstash Blob bucket — their paths, sizes and links, never their bytes. Actions: list (needs bucket_id; optional prefix and cursor; up to 1000 objects per page, and a cursor in the result means more follow — pass it back to continue), delete (needs bucket_id and paths, up to 1000 exact keys; permanent, and a path that is already gone counts as deleted). To empty a bucket before blob_bucket delete, list a page, delete its paths, repeat until list comes back empty. Never returns bucket tokens.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "list",
+            "delete"
+          ],
+          "description": "The action to perform"
+        },
+        "bucket_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The bucket's id, from blob_bucket list or create"
+        },
+        "prefix": {
+          "description": "list only: objects whose key starts with this, e.g. 'proof/my-repo/'",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "cursor": {
+          "description": "list only: where to continue from, as returned by the previous page",
+          "type": "string",
+          "minLength": 1
+        },
+        "paths": {
+          "description": "delete only: the exact object keys to remove (up to 1000)",
+          "minItems": 1,
+          "maxItems": 1000,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        }
+      },
+      "required": [
+        "action",
+        "bucket_id"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Manage Blob Objects"
+    }
+  },
+  {
+    "name": "upstash_console",
+    "title": "Open Upstash Console",
+    "description": "Opens the Upstash console: an interactive view of the user's Redis databases and keys, QStash and Workflow schedules, logs and DLQs, Vector and Search indexes, Boxes and Blob buckets. Call it when the user asks to see, browse or open their Upstash resources rather than for a specific answer. To show one resource, pass product and resource (and a tab): the console opens on it, and the user can still navigate from there.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "product": {
+          "description": "Open on this product's page instead of the first one",
+          "type": "string",
+          "enum": [
+            "redis",
+            "qstash",
+            "workflow",
+            "vector",
+            "search",
+            "box",
+            "blob"
+          ]
+        },
+        "resource": {
+          "description": "Select this resource, by ID or name: a Redis database, Vector index, Search database, box or Blob bucket. For QStash and Workflow, the region: eu or us",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "tab": {
+          "description": "Open this tab: overview and stats (every product); settings (every product: a Danger zone with deleting the resource and, except Box, resetting its credentials; Redis, QStash, Workflow, Vector, Search also plan, Prod Pack and budget, and Redis read regions, eviction and auto-upgrade); data, cli, insights (Redis); data (Vector, Search); publish, schedules, logs, dlq (QStash); trigger, runs, dlq (Workflow); logs, snapshots (Box); objects (Blob)",
+          "type": "string",
+          "enum": [
+            "overview",
+            "data",
+            "cli",
+            "stats",
+            "insights",
+            "publish",
+            "trigger",
+            "schedules",
+            "logs",
+            "runs",
+            "dlq",
+            "objects",
+            "snapshots",
+            "settings"
+          ]
+        }
+      }
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Open Upstash Console"
+    },
+    "icons": [
+      {
+        "src": "https://upstash.com/logo/upstash-icon-white-bg.svg",
+        "mimeType": "image/svg+xml",
+        "sizes": [
+          "any"
+        ]
+      },
+      {
+        "src": "https://upstash.com/logo/upstash-icon-white-bg.png",
+        "mimeType": "image/png",
+        "sizes": [
+          "354x354"
+        ]
+      }
+    ],
+    "_meta": {
+      "ui": {
+        "resourceUri": "ui://upstash/console"
+      },
+      "ui/resourceUri": "ui://upstash/console",
+      "openai/ui": {
+        "entrypoints": [
+          {
+            "type": "global"
+          },
+          {
+            "type": "thread"
+          }
+        ],
+        "preferredModelDisplayMode": "inline"
+      }
+    }
+  },
+  {
+    "name": "console_redis_keys",
+    "title": "List Redis Keys (Console)",
+    "description": "Console only: one SCAN page of a Redis database with each key's type and TTL.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "cursor": {
+          "default": "0",
+          "type": "string",
+          "pattern": "^\\d+$"
+        },
+        "match": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "count": {
+          "default": 100,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "type": {
+          "description": "Only keys of this type (SCAN's TYPE option)",
+          "type": "string",
+          "enum": [
+            "string",
+            "hash",
+            "list",
+            "set",
+            "zset",
+            "stream",
+            "json"
+          ]
+        }
+      },
+      "required": [
+        "databaseId"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "List Redis Keys (Console)"
+    },
+    "_meta": {
+      "ui": {
+        "visibility": [
+          "app"
+        ]
+      }
+    }
+  },
+  {
+    "name": "console_redis_value",
+    "title": "Read Redis Value (Console)",
+    "description": "Console only: one Redis key's type, TTL, size and a bounded read of its value.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "databaseId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "The Redis database ID"
+        },
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "databaseId",
+        "key"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "title": "Read Redis Value (Console)"
+    },
+    "_meta": {
+      "ui": {
+        "visibility": [
+          "app"
+        ]
+      }
+    }
+  }
+]

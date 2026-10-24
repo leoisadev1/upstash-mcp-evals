@@ -1,0 +1,20 @@
+{
+  "name": "upstash-mcp-evals",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "manual": "bun packages/manual/src/main.ts",
+    "evals": "bun packages/evals/src/main.ts",
+    "cleanup": "bun packages/core/src/cleanup-cli.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "record": "bun packages/manual/src/record.ts",
+    "record-live": "bun packages/manual/src/record-live.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "typescript": "^7.0.2"
+  }
+}

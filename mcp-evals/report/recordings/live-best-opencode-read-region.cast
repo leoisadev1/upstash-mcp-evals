@@ -1,0 +1,11 @@
+{"version":3,"term":{"cols":110,"rows":34},"timestamp":1792815511,"command":"printf '\\033[2m$ %s\\033[0m\\n\\n' 'opencode \"Add a read region in eu-west-1 to my Upstash Redis DB mcpeval-read-region-go-asrqod. I know it costs extra, go ahead.\"'; 'opencode' 'run' '-m' 'anthropic/claude-opus-5-5' '--dir' '/tmp/mcpeval-run-LifuDs/ws' 'Add a read region in eu-west-1 to my Upstash Redis DB mcpeval-read-region-go-asrqod. I know it costs extra, go ahead.' < /dev/null","env":{"SHELL":"/bin/bash"}}
+[0.001, "o", "\u001b[2m$ opencode \"Add a read region in eu-west-1 to my Upstash Redis DB mcpeval-read-region-go-asrqod. I know it costs extra, go ahead.\"\u001b[0m\r\n\r\n"]
+[1.475, "o", "\u001b[0m\r\n> build · claude-opus-5-5\r\n\u001b[0m\r\n"]
+[4.469, "o", "I need to find the database and its current read regions.\r\n\u001b[0m\r\n"]
+[0.407, "o", "\u001b[0m⚙ \u001b[0mupstash_redis_list_databases Unknown\r\n"]
+[3.009, "o", "\u001b[0m⚙ \u001b[0mupstash_redis_get_database {\"databaseId\":\"48fb19e0-42d2-4ab8-b75f-816b350d5ef2\"}\r\n"]
+[2.212, "o", "\u001b[0m\r\nThe database has no read regions right now, and the primary is us-east-1. Adding eu-west-1:\r\n\u001b[0m\r\n"]
+[0.946, "o", "\u001b[0m⚙ \u001b[0mupstash_redis_update_read_regions {\"databaseId\":\"48fb19e0-42d2-4ab8-b75f-816b350d5ef2\",\"read_regions\":[\"eu-west-1\"]}\r\n"]
+[2.996, "o", "\u001b[0m⚙ \u001b[0mupstash_redis_get_database {\"databaseId\":\"48fb19e0-42d2-4ab8-b75f-816b350d5ef2\"}\r\n"]
+[3.905, "o", "\u001b[0m\r\nI added eu-west-1 as a read region on `mcpeval-read-region-go-asrqod`, and I checked afterward that it's there.\r\n\r\n- **Primary region:** us-east-1 (unchanged)\r\n- **Read regions:** eu-west-1 (there were none before)\r\n- **State:** active\r\n- **Endpoint:** `legal-lacewing-72489.upstash.io` (unchanged, so your clients don't need new settings)\r\n\r\nThe database is pay-as-you-go. Each write is now copied to eu-west-1 and billed as an extra command, and your data's storage is counted in both regions. Read regions can only be changed once every 30 minutes, so you'll need to wait a bit before changing them again.\r\n\u001b[0m\r\n"]
+[0.078, "x", "0"]

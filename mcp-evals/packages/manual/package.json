@@ -1,0 +1,1 @@
+{ "name": "@mcp-evals/manual", "private": true, "type": "module", "dependencies": { "@mcp-evals/core": "workspace:*" } }
